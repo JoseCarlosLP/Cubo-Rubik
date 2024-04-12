@@ -83,6 +83,16 @@ class CuboRubik:
         self.caras[orden[2]].piezas[0] = self.caras[orden[3]].piezas[0]
         self.caras[orden[3]].piezas[0] = temp_cara
 
+    def girar_cara_inferior(self, sentido='antihorario'):
+        orden = ['F', 'R', 'B', 'L']
+        if sentido == 'horario':
+            orden = ['F', 'L', 'B', 'R']
+        temp_cara = self.caras[orden[0]].piezas[-1]
+        self.caras[orden[0]].piezas[-1] = self.caras[orden[1]].piezas[-1]
+        self.caras[orden[1]].piezas[-1] = self.caras[orden[2]].piezas[-1]
+        self.caras[orden[2]].piezas[-1] = self.caras[orden[3]].piezas[-1]
+        self.caras[orden[3]].piezas[-1] = temp_cara
+
     def mostrar_estado(self):
         for cara in self.caras:
             print(f"Cara {cara}:")
@@ -125,11 +135,17 @@ if __name__ == '__main__':
     # cubo.girar_cara_trasera('horario')
     # cubo.mostrar_estado()
 
+    # print('MOV = U')
+    # cubo.girar_cara_superior('horario')
+    # cubo.mostrar_estado()
+    # print("MOV = U'")
+    # cubo.girar_cara_superior()
+    # cubo.mostrar_estado()
 
-    print('MOV = U')
-    cubo.girar_cara_superior('horario')
+    print('MOV = D')
+    cubo.girar_cara_inferior('horario')
     cubo.mostrar_estado()
-    print("MOV = U'")
-    cubo.girar_cara_superior()
+    print("MOV = D'")
+    cubo.girar_cara_inferior()
     cubo.mostrar_estado()
 
