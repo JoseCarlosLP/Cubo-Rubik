@@ -104,17 +104,23 @@ class CuboRubik:
             self.caras[orden[2]].set_color_a_pieza(i, -1, self.caras[orden[3]].piezas[i][-1].get_color())
             self.caras[orden[3]].set_color_a_pieza(i, -1, temp_cara[-(i + 1)].get_color())
 
-    def girar_cara_izquierda(self, sentido='horario'):
-        self.girar_cara('L', sentido)
+    def girar_cara_L_M(self, a, b, sentido):
         orden = ['B', 'D', 'F', 'U']
         if sentido == 'antihorario':
             orden = ['B', 'U', 'F', 'D']
-        temp_cara = [copy.deepcopy(fila[-1]) for fila in self.caras[orden[0]].piezas]
+        temp_cara = [copy.deepcopy(fila[b]) for fila in self.caras[orden[0]].piezas]
         for i in range(len(temp_cara)):
-            self.caras[orden[0]].set_color_a_pieza(-(i + 1), -1, self.caras[orden[1]].piezas[i][0].get_color())
-            self.caras[orden[1]].set_color_a_pieza(i, 0, self.caras[orden[2]].piezas[i][0].get_color())
-            self.caras[orden[2]].set_color_a_pieza(i, 0, self.caras[orden[3]].piezas[i][0].get_color())
-            self.caras[orden[3]].set_color_a_pieza(i, 0, temp_cara[-(i + 1)].get_color())
+            self.caras[orden[0]].set_color_a_pieza(-(i + 1), b, self.caras[orden[1]].piezas[i][a].get_color())
+            self.caras[orden[1]].set_color_a_pieza(i, a, self.caras[orden[2]].piezas[i][a].get_color())
+            self.caras[orden[2]].set_color_a_pieza(i, a, self.caras[orden[3]].piezas[i][a].get_color())
+            self.caras[orden[3]].set_color_a_pieza(i, a, temp_cara[-(i + 1)].get_color())
+
+    def girar_cara_izquierda(self, sentido='horario'):
+        self.girar_cara('L', sentido)
+        self.girar_cara_L_M(0, -1, sentido)
+
+    def girar_cara_m(self, sentido='horario'):
+        self.girar_cara_L_M(1, 1, sentido)
 
     def girar_cara_superior(self, sentido='horario'):
         self.girar_cara('U', sentido)
@@ -138,18 +144,7 @@ class CuboRubik:
         self.caras[orden[2]].piezas[-1] = self.caras[orden[3]].piezas[-1]
         self.caras[orden[3]].piezas[-1] = temp_cara
 
-    def girar_cara_m(self,sentido='horario'):
-        orden = ['B', 'D', 'F', 'U']
-        if sentido == 'antihorario':
-            orden = ['B', 'U', 'F', 'D']
-        temp_cara = [copy.deepcopy(fila[1]) for fila in self.caras[orden[0]].piezas]
-        for i in range(len(temp_cara)):
-            self.caras[orden[0]].set_color_a_pieza(-(i + 1), 1, self.caras[orden[1]].piezas[i][1].get_color())
-            self.caras[orden[1]].set_color_a_pieza(i, 1, self.caras[orden[2]].piezas[i][1].get_color())
-            self.caras[orden[2]].set_color_a_pieza(i, 1, self.caras[orden[3]].piezas[i][1].get_color())
-            self.caras[orden[3]].set_color_a_pieza(i, 1, temp_cara[-(i + 1)].get_color())
-
-    def girar_cara_e(self,sentido='horario'):
+    def girar_cara_e(self, sentido='horario'):
         orden = ['F', 'L', 'B', 'R']
         if sentido == 'antihorario':
             orden = ['F', 'R', 'B', 'L']
@@ -176,8 +171,6 @@ class CuboRubik:
                 self.caras['R'].piezas[i][1] = self.caras['D'].piezas[1][-(i + 1)]
                 self.caras['L'].piezas[i][1] = temp_cara_u[-(i + 1)]
             self.caras['D'].piezas[1] = temp_cara_lado
-
-
 
     def mostrar_estado(self):
         print("CUBO RUBIK")
@@ -209,5 +202,5 @@ if __name__ == '__main__':
     cubo.pruebas()
     cubo.mostrar_estado()
 
-    cubo.girar_cara_s('antihorario')
+    cubo.girar_cara_m()
     cubo.mostrar_estado()
