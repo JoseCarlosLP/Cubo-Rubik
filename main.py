@@ -38,6 +38,9 @@ class CuboRubik:
             'R': Cara('R'),
             'B': Cara('B')
         }
+        self.acciones = ['F', 'F!', 'B', 'B!', 'U', 'U!', 'D', 'D!', 'L', 'L!', 'R', 'R!', 'M', 'M!', 'S', 'S!', 'E',
+                         'E!']
+        self.padre = None
 
     def girar_cara_actual(self, cara, sentido='horario'):
         a = 2
@@ -173,10 +176,25 @@ class CuboRubik:
         return True
 
 
+class EspacioEstados:
+    def __init__(self):
+        self.espacio = {}
+
+    def agregar_estado(self, cubo):
+        if cubo not in self.espacio:
+            self.espacio[cubo] = cubo
+        else:
+            print("Ese estado del cubo ya esta almacenado en el espacio")
+
+    def mostrar_espacio_estados(self):
+        for cubo in self.espacio:
+            self.espacio[cubo].mostrar_estado()
+
+
 if __name__ == '__main__':
     cubo = CuboRubik()
-    print(cubo.esta_resuelto())
+    espacio = EspacioEstados()
+    espacio.agregar_estado(cubo)
+    espacio.mostrar_espacio_estados()
 
-    cubo.pruebas()
-    cubo.mostrar_estado()
-    print(cubo.esta_resuelto())
+
