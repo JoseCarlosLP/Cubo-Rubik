@@ -15,9 +15,6 @@ class Pieza:
 class Cara:
     def __init__(self, color):
         self.piezas = [[Pieza(color) for _ in range(3)] for _ in range(3)]
-        # self.piezas = [[Pieza('1'),Pieza('2'),Pieza('3')],
-        #                [Pieza('4'),Pieza('5'),Pieza('6')],
-        #                [Pieza('7'),Pieza('8'),Pieza('9')]]
 
     def set_color_a_pieza(self, i, j, c):
         self.piezas[i][j].set_color(c)
@@ -54,61 +51,38 @@ class CuboRubik:
         self.caras[cara].set_color_a_pieza(esquinas[3][0], esquinas[3][1], tmp_esquina.get_color())
         self.caras[cara].set_color_a_pieza(centros[3][0], centros[3][1], tmp_centro.get_color())
 
+    def girar_cara_F_B_S(self, a, b, sentido):
+        if sentido == 'horario':
+            temp_cara_u = [fila[a] for fila in self.caras['L'].piezas]
+            temp_cara_lado = [fila[b] for fila in self.caras['R'].piezas]
+            for i in range(len(self.caras['L'].piezas)):
+                self.caras['L'].piezas[i][a] = self.caras['D'].piezas[b][i]
+                self.caras['R'].piezas[i][b] = self.caras['U'].piezas[a][i]
+            self.caras['D'].piezas[b] = temp_cara_lado[::-1]
+            self.caras['U'].piezas[a] = temp_cara_u[::-1]
+        elif sentido == 'antihorario':
+            temp_cara_u = copy.deepcopy(self.caras['U'].piezas[a])
+            self.caras['U'].piezas[a] = [fila[b] for fila in self.caras['R'].piezas]
+            temp_cara_lado = [fila[a] for fila in self.caras['L'].piezas]
+            for i in range(len(self.caras['R'].piezas)):
+                self.caras['R'].piezas[i][b] = self.caras['D'].piezas[b][-(i + 1)]
+                self.caras['L'].piezas[i][a] = temp_cara_u[-(i + 1)]
+            self.caras['D'].piezas[b] = temp_cara_lado
+
     def girar_cara_frontal(self, sentido='horario'):
         self.girar_cara_actual('F', sentido)
-        if sentido == 'horario':
-            temp_cara_u = [fila[-1] for fila in self.caras['L'].piezas]
-            temp_cara_lado = [fila[0] for fila in self.caras['R'].piezas]
-            for i in range(len(self.caras['L'].piezas)):
-                self.caras['L'].piezas[i][-1] = self.caras['D'].piezas[0][i]
-                self.caras['R'].piezas[i][0] = self.caras['U'].piezas[-1][i]
-            self.caras['D'].piezas[0] = temp_cara_lado[::-1]
-            self.caras['U'].piezas[-1] = temp_cara_u[::-1]
-        elif sentido == 'antihorario':
-            temp_cara_u = copy.deepcopy(self.caras['U'].piezas[-1])
-            self.caras['U'].piezas[-1] = [fila[0] for fila in self.caras['R'].piezas]
-            temp_cara_lado = [fila[-1] for fila in self.caras['L'].piezas]
-            for i in range(len(self.caras['R'].piezas)):
-                self.caras['R'].piezas[i][0] = self.caras['D'].piezas[0][-(i + 1)]
-                self.caras['L'].piezas[i][-1] = temp_cara_u[-(i + 1)]
-            self.caras['D'].piezas[0] = temp_cara_lado
-
-    def girar_cara_trasera(self, sentido='horario'):
-        self.girar_cara_actual('B', sentido)
-        if sentido == 'horario':
-            temp_cara_u = copy.deepcopy(self.caras['U'].piezas[0])
-            self.caras['U'].piezas[0] = [fila[-1] for fila in self.caras['R'].piezas]
-            temp_cara_lado = [fila[0] for fila in self.caras['L'].piezas]
-            for i in range(len(self.caras['R'].piezas)):
-                self.caras['R'].piezas[i][-1] = self.caras['D'].piezas[-1][-(i + 1)]
-                self.caras['L'].piezas[i][0] = temp_cara_u[-(i + 1)]
-            self.caras['D'].piezas[-1] = temp_cara_lado
-        elif sentido == 'antihorario':
-            temp_cara_u = [fila[0] for fila in self.caras['L'].piezas]
-            temp_cara_lado = [fila[-1] for fila in self.caras['R'].piezas]
-            for i in range(len(self.caras['L'].piezas)):
-                self.caras['L'].piezas[i][0] = self.caras['D'].piezas[-1][i]
-                self.caras['R'].piezas[i][-1] = self.caras['U'].piezas[0][i]
-            self.caras['D'].piezas[-1] = temp_cara_lado[::-1]
-            self.caras['U'].piezas[0] = temp_cara_u[::-1]
+        self.girar_cara_F_B_S(-1, 0, sentido)
 
     def girar_cara_s(self, sentido='horario'):
+        self.girar_cara_F_B_S(1, 1, sentido)
+
+    def girar_cara_posterior(self, sentido='horario'):
+        self.girar_cara_actual('B', sentido)
         if sentido == 'horario':
-            temp_cara_u = [fila[1] for fila in self.caras['L'].piezas]
-            temp_cara_lado = [fila[1] for fila in self.caras['R'].piezas]
-            for i in range(len(self.caras['L'].piezas)):
-                self.caras['L'].piezas[i][1] = self.caras['D'].piezas[1][i]
-                self.caras['R'].piezas[i][1] = self.caras['U'].piezas[1][i]
-            self.caras['D'].piezas[1] = temp_cara_lado[::-1]
-            self.caras['U'].piezas[1] = temp_cara_u[::-1]
-        elif sentido == 'antihorario':
-            temp_cara_u = copy.deepcopy(self.caras['U'].piezas[1])
-            self.caras['U'].piezas[1] = [fila[1] for fila in self.caras['R'].piezas]
-            temp_cara_lado = [fila[1] for fila in self.caras['L'].piezas]
-            for i in range(len(self.caras['R'].piezas)):
-                self.caras['R'].piezas[i][1] = self.caras['D'].piezas[1][-(i + 1)]
-                self.caras['L'].piezas[i][1] = temp_cara_u[-(i + 1)]
-            self.caras['D'].piezas[1] = temp_cara_lado
+            sentido = 'antihorario'
+        else:
+            sentido = 'horario'
+        self.girar_cara_F_B_S(0, -1, sentido)
 
     def girar_cara_L_M_R(self, a, b, sentido):
         orden = ['B', 'D', 'F', 'U']
@@ -170,20 +144,19 @@ class CuboRubik:
             print()
 
     def pruebas(self):
-        #for _ in range(5):
-        self.girar_cara_trasera()
         self.girar_cara_inferior()
         self.girar_cara_superior()
         self.girar_cara_inferior()
         self.girar_cara_superior()
         self.girar_cara_derecha()
         self.girar_cara_derecha()
-        self.girar_cara_trasera('antihorario')
+        self.girar_cara_posterior('antihorario')
         self.girar_cara_superior()
         self.girar_cara_superior()
         self.girar_cara_frontal()
         self.girar_cara_izquierda('antihorario')
         self.girar_cara_izquierda('antihorario')
+        self.girar_cara_inferior('antihorario')
 
 
 if __name__ == '__main__':
