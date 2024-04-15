@@ -15,9 +15,17 @@ class Pieza:
 class Cara:
     def __init__(self, color):
         self.piezas = [[Pieza(color) for _ in range(3)] for _ in range(3)]
+        self.centro = self.piezas[1][1].get_color()
 
     def set_color_a_pieza(self, i, j, c):
         self.piezas[i][j].set_color(c)
+
+    def esta_resuelto(self):
+        for i in range(len(self.piezas)):
+            for j in range(len(self.piezas[i])):
+                if self.piezas[i][j].get_color() != self.centro:
+                    return False
+        return True
 
 
 class CuboRubik:
@@ -158,11 +166,17 @@ class CuboRubik:
         self.girar_cara_izquierda('antihorario')
         self.girar_cara_inferior('antihorario')
 
+    def esta_resuelto(self):
+        for cara in self.caras:
+            if not self.caras[cara].esta_resuelto():
+                return False
+        return True
+
 
 if __name__ == '__main__':
     cubo = CuboRubik()
+    print(cubo.esta_resuelto())
+
     cubo.pruebas()
     cubo.mostrar_estado()
-
-    cubo.girar_cara_s()
-    cubo.mostrar_estado()
+    print(cubo.esta_resuelto())
